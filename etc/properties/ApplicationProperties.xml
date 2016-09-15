@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE application [
+    <!ENTITY enterpriseProperties PUBLIC "-//DouglasCounty/Application Properties//EN"
+    "classpath://EnterpriseProperties.xml">    
+    ]>
+
+<application refresh="auto">
+    <name>nflFun</name>
+    <enterprise>
+        &enterpriseProperties;
+    </enterprise>
+    
+    <environment>        
+
+    </environment>
+</application>

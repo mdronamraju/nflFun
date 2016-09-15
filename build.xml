@@ -1,0 +1,80 @@
+<project name="nflFun" default="deploy" basedir=".">
+    <property name="module"             value="nflFun"/>
+    <property name="jboss.home"         value="/Users/admin/development/appservers/jboss-as-7.1.0.Final"/>
+    <property name="build"              value="${basedir}/build"/>
+    <property name="etc"                value="${basedir}/etc"/>
+    <property name="lib"                value="${basedir}/lib"/>
+    <property name="src"                value="${basedir}/src"/>
+    <property name="classes"            value="${build}/WEB-INF/classes"/>
+    <property name="web"                value="${basedir}/web"/>
+    <property name="jbosshostname"      value="localhost"/>
+    <property name="jbossusername"      value="asadmin"/>
+    <property name="jbossuserpassword"  value="admin001"/>
+
+    <path id="compile.classpath">
+        <fileset dir="${basedir}/lib/">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build}" />
+    </target>
+
+    <target name="init" depends="clean">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${classes}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${classes}" deprecation="no" debug="true">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <target name="war" depends="compile">
+        <war destfile="${build}/${module}.war">
+            
+            <webinf dir="${basedir}/etc/web-inf/">
+                <include name="jboss-web.xml"/>
+                <include name="web.xml"/>
+            </webinf>
+
+            <lib dir="${basedir}/${lib}">
+                <include name="**/*.jar" />
+            </lib>
+
+            <classes dir="${classes}"/>
+
+            <fileset dir="${web}">
+                <include name="**/*.*"/>
+            </fileset>
+        </war>
+    </target>
+
+    <presetdef name="jboss-cli">
+        <java jar="${jboss.home}/jboss-modules.jar" fork="true" >
+            <arg line="-mp ${jboss.home}/modules org.jboss.as.cli -c" />
+        </java>
+    </presetdef>
+
+    <target name="deploy" depends="undeploy, war">
+        <jboss-cli failonerror="true">
+            <arg line="'deploy --force ${build}/${module}.war'" />
+        </jboss-cli>
+    </target>
+
+    <target name="undeploy">
+        <jboss-cli failonerror="false">
+            <arg line="'undeploy  nflFun.war'" />
+        </jboss-cli>
+    </target>
+
+    <target name="shutdown">
+        <jboss-cli failonerror="true">
+            <arg line=":shutdown(restart=true)" />
+        </jboss-cli>
+    </target>
+
+</project>
