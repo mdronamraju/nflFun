@@ -1,3 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +74,11 @@
                 <div class="panel-heading panel-title">
                     <div class="row">
                         <div class="col-lg-10">
-                            <label>Your name goes here...</label>
+                            <label>
+                                <c:if test="${not empty requestScope.user}">
+                                    <c:out value="${user.firstName} ${user.lastName}"/>
+                                </c:if>
+                            </label>
                         </div>
                         <div class="col-lg-2">
                             <button type="button" onclick="submit();" class="btn btn-info">Submit</button>
@@ -203,10 +211,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team13Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio7">
+                                <input type="text" size="2" maxlength="2" id="team13Score" onchange="addTwoNumber('team13Score', 'team14Score', 'total7Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio7">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio7">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team14Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio7">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team14Score" onchange="addTwoNumber('team13Score', 'team14Score', 'total7Score')"  style="color: #000000;">
                                 <label>
                                     Texans
                                 </label>
@@ -222,10 +230,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team15Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio8">
+                                <input type="text" size="2" maxlength="2" id="team15Score" onchange="addTwoNumber('team15Score', 'team16Score', 'total8Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio8">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio8">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team16Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio8">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team16Score" onchange="addTwoNumber('team15Score', 'team16Score', 'total8Score')"  style="color: #000000;">
                                 <label>
                                     Chargers
                                 </label>
@@ -242,10 +250,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team17Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio9">
+                                <input type="text" size="2" maxlength="2" id="team17Score" onchange="addTwoNumber('team17Score', 'team18Score', 'total9Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio9">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio9">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team18Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio9">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team18Score" onchange="addTwoNumber('team17Score', 'team18Score', 'total9Score')"  style="color: #000000;">
                                 <label>
                                     Raiders
                                 </label>
@@ -262,10 +270,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team19Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio10">
+                                <input type="text" size="2" maxlength="2" id="team19Score" onchange="addTwoNumber('team19Score', 'team20Score', 'total10Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio10">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio10">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team20Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio10">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team20Score" onchange="addTwoNumber('team19Score', 'team20Score', 'total10Score')"  style="color: #000000;">
                                 <label>
                                     Saints
                                 </label>
@@ -293,10 +301,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team21Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio11">
+                                <input type="text" size="2" maxlength="2" id="team21Score" onchange="addTwoNumber('team21Score', 'team22Score', 'total11Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio11">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio11">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team22Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio11">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team22Score" onchange="addTwoNumber('team21Score', 'team22Score', 'total11Score')"  style="color: #000000;">
                                 <label>
                                     Chiefs
                                 </label>
@@ -312,10 +320,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team23Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio12">
+                                <input type="text" size="2" maxlength="2" id="team23Score" onchange="addTwoNumber('team23Score', 'team24Score', 'total12Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio12">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio12">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team24Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio12">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team24Score" onchange="addTwoNumber('team23Score', 'team24Score', 'total12Score')"  style="color: #000000;">
                                 <label>
                                     Jaguars
                                 </label>
@@ -331,10 +339,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team25Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio13">
+                                <input type="text" size="2" maxlength="2" id="team25Score" onchange="addTwoNumber('team25Score', 'team26Score', 'total13Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio13">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio13">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team26Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio13">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team26Score" onchange="addTwoNumber('team25Score', 'team26Score', 'total13Score')"  style="color: #000000;">
                                 <label>
                                     Titans
                                 </label>
@@ -350,10 +358,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team27Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio14">
+                                <input type="text" size="2" maxlength="2" id="team27Score" onchange="addTwoNumber('team27Score', 'team28Score', 'total14Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio14">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio14">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team28Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio14">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team28Score" onchange="addTwoNumber('team27Score', 'team28Score', 'total14Score')"  style="color: #000000;">
                                 <label>
                                     Patriots
                                 </label>
@@ -369,10 +377,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team29Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio15">
+                                <input type="text" size="2" maxlength="2" id="team29Score" onchange="addTwoNumber('team29Score', 'team30Score', 'total15Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio15">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio15">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team30Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio15">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team30Score" onchange="addTwoNumber('team29Score', 'team30Score', 'total15Score')"  style="color: #000000;">
                                 <label>
                                     Chiefs
                                 </label>
@@ -389,10 +397,10 @@
                                 <label>
                                     Broncos
                                 </label>
-                                <input type="text" size="2" maxlength="2" id="team31Score" onchange="addTwoNumber()" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio16">
+                                <input type="text" size="2" maxlength="2" id="team31Score" onchange="addTwoNumber('team31Score', 'team32Score', 'total16Score')" style="color: #000000;">&nbsp;&nbsp;&nbsp;<input type="radio" name="optRadio16">
                             </th>
                             <th width="24%">
-                                <input type="radio" name="optRadio16">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team32Score" name="team32Score" onchange="addTwoNumber()"  style="color: #000000;">
+                                <input type="radio" name="optRadio16">&nbsp;&nbsp;&nbsp;<input type="text" size="2" maxlength="2" id="team32Score" name="team32Score" onchange="addTwoNumber('team31Score', 'team32Score', 'total16Score')"  style="color: #000000;">
                                 <label>
                                     Raiders
                                 </label>

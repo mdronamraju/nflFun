@@ -15,12 +15,10 @@ table,th,td {
 <body>
 	<%-- Person Add/Edit logic --%>
 	<c:if test="${requestScope.error ne null}">
-		<strong style="color: red;"><c:out
-				value="${requestScope.error}"></c:out></strong>
+		<c:out value="${requestScope.error}"></c:out>
 	</c:if>
 	<c:if test="${requestScope.success ne null}">
-		<strong style="color: green;"><c:out
-				value="${requestScope.success}"></c:out></strong>
+		<c:out value="${requestScope.success}"></c:out>
 	</c:if>
 	<c:url value="/addPerson" var="addURL"></c:url>
 	<c:url value="/editPerson" var="editURL"></c:url>

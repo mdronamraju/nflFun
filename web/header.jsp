@@ -11,16 +11,18 @@
             <a class="navbar-brand" style="color: #ffffff;" href="#">NFL Fun</a>
         </div>
 
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="http://www.nfl.com/scores" style="color: #ffffff;" target="_blank">NFL Scores</a></li>
-                <li><a href="http://www.nfl.com/standings" style="color: #ffffff;" target="_blank">NFL Standings</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-left">
-                <li><a href="/myScore"><div style="color: orangered; font-weight: bold;">My Points</div></a></li>
-                <li><a href="/allScores"><div style="color: orangered; font-weight: bold;">All Points</div></a></li>
-            </ul>
+        <div id="navbar" class="navbar-collapse collapse">
+
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.jsp">Home</a></li>
+                    <li><a href="http://www.nfl.com/scores" style="color: #ffffff;" target="_blank">NFL Scores</a></li>
+                    <li><a href="http://www.nfl.com/standings" style="color: #ffffff;" target="_blank">NFL Standings</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/myScore"><div style="color: orangered; font-weight: bold;">My Points</div></a></li>
+                    <li><a href="/allScores"><div style="color: orangered; font-weight: bold;">All Points</div></a></li>
+                    <li><a href="/logout"><div style="color: orangered; font-weight: bold;">Logout</div></a></li>
+                </ul>
         </div>
     </div>
 </nav>

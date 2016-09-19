@@ -3,6 +3,7 @@ package org.dronamraju.nfl.dao;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
@@ -25,27 +26,37 @@ import static com.mongodb.client.model.Filters.*;
 public class MongoDBDAO {
 	private static Log log = LogFactory.getLog(MongoDBDAO.class);
 	private DBCollection col;
-	MongoClient mongoClient;
+	MongoClient mongoClient = getMongoClient();
+	MongoDatabase manudrDatabase = getManudrDatabase();
 
-	public MongoDBDAO() throws UnknownHostException {
+
+	public MongoDBDAO() {
+	}
+
+	public MongoClient getMongoClient() {
 		MongoClientURI uri = new MongoClientURI("mongodb://manudr:manudr@ds015508.mongolab.com:15508/manudr");
 		mongoClient = new MongoClient(uri);
+		return mongoClient;
+	}
+
+	public MongoDatabase getManudrDatabase() {
+		return mongoClient.getDatabase("manudr");
 	}
 
 	public User createUser(User user) {
-		cleanDatabase("manudr");
 		Document userDocument = new Document("firstName", user.getFirstName())
 				.append("lastName", user.getLastName())
 				.append("email", user.getEmail())
-				.append("password", user.getPassword());
-		mongoClient.getDatabase("manudr").getCollection("users").insertOne(userDocument);
-		log.info("user collection: " + mongoClient.getDatabase("manudr").getCollection("users"));
+				.append("password", user.getPassword())
+				.append("isAdmin", user.isAdmin());
+		getManudrDatabase().getCollection("users").insertOne(userDocument);
+		log.info("user collection: " + manudrDatabase.getCollection("users"));
 		return user;
 	}
 
 	public List<User> readAllUsers() {
 		List<User> users = new ArrayList<User>();
-		MongoCollection<Document> collection = mongoClient.getDatabase("manudr").getCollection("users");
+		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
 		log.info("collection.count(): " + collection.count());
 
 		MongoCursor<Document> cursor = collection.find().iterator();
@@ -56,7 +67,8 @@ public class MongoDBDAO {
 						document.get("firstName").toString(),
 						document.get("lastName").toString(),
 						document.get("email").toString(),
-						document.get("password").toString()));
+						document.get("password").toString(),
+						new Boolean(document.get("isAdmin").toString())));
 			}
 		} finally {
 			cursor.close();
@@ -65,12 +77,57 @@ public class MongoDBDAO {
 		return users;
 	}
 
-	public void findPersion() {
-		MongoCollection<Document> collection = mongoClient.getDatabase("manudr").getCollection("users");
-		Document myDoc = collection.find(eq("i", 71)).first();
-
+	public User findUser(String email, String password) {
+		log.info("findUser(): " + email + ", " + password);
+		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
+		Document document = collection.find(eq("email", email)).first();
+		if (document != null) {
+			User user = new User(document.get("_id").toString(),
+					document.get("firstName").toString(),
+					document.get("lastName").toString(),
+					document.get("email").toString(),
+					document.get("password").toString(),
+					new Boolean(document.get("isAdmin").toString()));
+			log.info("User: " + user);
+			if (user.getPassword().equals(password)) {
+				return user;
+			}
+		}
+		return null;
 	}
 
+	public User findUser(String email) {
+		log.info("findUser(): " + email);
+		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
+		Document document = collection.find(eq("email", email)).first();
+		if (document != null) {
+			User user = new User(document.get("_id").toString(),
+					document.get("firstName").toString(),
+					document.get("lastName").toString(),
+					document.get("email").toString(),
+					document.get("password").toString(),
+					new Boolean(document.get("isAdmin").toString()));
+			log.info("User: " + user);
+			return user;
+		}
+		return null;
+	}
+
+	public void saveScores(User user, Map<String, String[]> paramMap) {
+		Document paramMapDocument = new Document();
+		paramMapDocument.append("email", user.getEmail());
+		for (String key : paramMap.keySet()) {
+			paramMapDocument.append(key, paramMap.get(key).toString());
+		}
+		getManudrDatabase().getCollection("scores").insertOne(paramMapDocument);
+	}
+
+	public MongoCollection<Document> getMongoCollection() {
+		MongoCollection<Document> mongoCollection = null;
+		mongoCollection = getManudrDatabase().getCollection("scores");
+		log.info("user collection: " + mongoCollection);
+		return mongoCollection;
+	}
 
 	public Person createPerson(Person p) {
 		DBObject doc = PersonConverter.toDBObject(p);
@@ -111,6 +168,7 @@ public class MongoDBDAO {
 	}
 
 	public void cleanDatabase(String databaseName) {
+		readAllUsers();
 		mongoClient.dropDatabase(databaseName);
 	}
 
