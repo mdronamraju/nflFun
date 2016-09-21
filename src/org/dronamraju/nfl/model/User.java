@@ -8,6 +8,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String totalPoints;
+    private String availablePoints;
     private String password;
     private Boolean isAdmin;
 
@@ -15,11 +17,13 @@ public class User {
 
     }
 
-    public User(String id, String firstName, String lastName, String email, String password, Boolean isAdmin) {
+    public User(String id, String firstName, String lastName, String email, String totalPoints, String availablePoints, String password, Boolean isAdmin) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.totalPoints = totalPoints;
+        this.availablePoints = availablePoints;
         this.password = password;
         this.isAdmin = isAdmin;
     }
@@ -72,6 +76,22 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
+    public String getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void setTotalPoints(String totalPoints) {
+        this.totalPoints = totalPoints;
+    }
+
+    public String getAvailablePoints() {
+        return availablePoints;
+    }
+
+    public void setAvailablePoints(String availablePoints) {
+        this.availablePoints = availablePoints;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -79,8 +99,10 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", totalPoints='" + totalPoints + '\'' +
+                ", availablePoints='" + availablePoints + '\'' +
                 ", password='" + password + '\'' +
-                ", isAdmin='" + isAdmin + '\'' +
+                ", isAdmin=" + isAdmin +
                 '}';
     }
 }

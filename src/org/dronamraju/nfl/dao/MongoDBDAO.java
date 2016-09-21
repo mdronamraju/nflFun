@@ -15,6 +15,7 @@ import com.mongodb.client.MongoDatabase;
 
 import org.bson.types.ObjectId;
 import org.dronamraju.nfl.converter.PersonConverter;
+import org.dronamraju.nfl.model.Game;
 import org.dronamraju.nfl.model.Person;
 import org.dronamraju.nfl.model.User;
 
@@ -28,6 +29,9 @@ public class MongoDBDAO {
 	private DBCollection col;
 	MongoClient mongoClient = getMongoClient();
 	MongoDatabase manudrDatabase = getManudrDatabase();
+	MongoCollection<Document> userCollection = getManudrDatabase().getCollection("users");
+	MongoCollection<Document> scoreCollection = getManudrDatabase().getCollection("scores");
+	MongoCollection<Document> gameCollection = getManudrDatabase().getCollection("games");
 
 
 	public MongoDBDAO() {
@@ -44,29 +48,33 @@ public class MongoDBDAO {
 	}
 
 	public User createUser(User user) {
+		log.info("createUser()...");
 		Document userDocument = new Document("firstName", user.getFirstName())
 				.append("lastName", user.getLastName())
 				.append("email", user.getEmail())
 				.append("password", user.getPassword())
+				.append("totalPoints", user.getTotalPoints())
+				.append("availablePoints", user.getAvailablePoints())
 				.append("isAdmin", user.isAdmin());
-		getManudrDatabase().getCollection("users").insertOne(userDocument);
-		log.info("user collection: " + manudrDatabase.getCollection("users"));
+		userCollection.insertOne(userDocument);
+		log.info("user collection: " + userCollection);
 		return user;
 	}
 
 	public List<User> readAllUsers() {
 		List<User> users = new ArrayList<User>();
-		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
-		log.info("collection.count(): " + collection.count());
-
-		MongoCursor<Document> cursor = collection.find().iterator();
+	    log.info("collection.count(): " + userCollection.count());
+		MongoCursor<Document> cursor = userCollection.find().iterator();
 		try {
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
+				log.info("document: " + document);
 				users.add(new User(document.get("_id").toString(),
 						document.get("firstName").toString(),
 						document.get("lastName").toString(),
 						document.get("email").toString(),
+						document.get("totalPoints").toString(),
+						document.get("availablePoints").toString(),
 						document.get("password").toString(),
 						new Boolean(document.get("isAdmin").toString())));
 			}
@@ -79,13 +87,14 @@ public class MongoDBDAO {
 
 	public User findUser(String email, String password) {
 		log.info("findUser(): " + email + ", " + password);
-		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
-		Document document = collection.find(eq("email", email)).first();
+		Document document = userCollection.find(eq("email", email)).first();
 		if (document != null) {
 			User user = new User(document.get("_id").toString(),
 					document.get("firstName").toString(),
 					document.get("lastName").toString(),
 					document.get("email").toString(),
+					document.get("totalPoints").toString(),
+					document.get("availablePoints").toString(),
 					document.get("password").toString(),
 					new Boolean(document.get("isAdmin").toString()));
 			log.info("User: " + user);
@@ -98,13 +107,14 @@ public class MongoDBDAO {
 
 	public User findUser(String email) {
 		log.info("findUser(): " + email);
-		MongoCollection<Document> collection = getManudrDatabase().getCollection("users");
-		Document document = collection.find(eq("email", email)).first();
+		Document document = userCollection.find(eq("email", email)).first();
 		if (document != null) {
 			User user = new User(document.get("_id").toString(),
 					document.get("firstName").toString(),
 					document.get("lastName").toString(),
 					document.get("email").toString(),
+					document.get("totalPoints").toString(),
+					document.get("availablePoints").toString(),
 					document.get("password").toString(),
 					new Boolean(document.get("isAdmin").toString()));
 			log.info("User: " + user);
@@ -116,17 +126,31 @@ public class MongoDBDAO {
 	public void saveScores(User user, Map<String, String[]> paramMap) {
 		Document paramMapDocument = new Document();
 		paramMapDocument.append("email", user.getEmail());
+
 		for (String key : paramMap.keySet()) {
-			paramMapDocument.append(key, paramMap.get(key).toString());
+			String[] paramValues = paramMap.get(key);
+			log.info("Key: " + key + ", Value: " + paramValues[0]);
+			paramMapDocument.append(key, paramValues[0]);
 		}
-		getManudrDatabase().getCollection("scores").insertOne(paramMapDocument);
+
+		scoreCollection.insertOne(paramMapDocument);
+		log.info(readAllScores());
 	}
 
-	public MongoCollection<Document> getMongoCollection() {
-		MongoCollection<Document> mongoCollection = null;
-		mongoCollection = getManudrDatabase().getCollection("scores");
-		log.info("user collection: " + mongoCollection);
-		return mongoCollection;
+	public List readAllScores() {
+		List scoreList = new ArrayList();
+		log.info("scoreCollection.count(): " + scoreCollection.count());
+		MongoCursor<Document> cursor = scoreCollection.find().iterator();
+		try {
+			while (cursor.hasNext()) {
+				Document document = cursor.next();
+				scoreList.add(document);
+			}
+		} finally {
+			cursor.close();
+		}
+		log.info("scoreList: " + scoreList);
+		return scoreList;
 	}
 
 	public Person createPerson(Person p) {
@@ -167,9 +191,155 @@ public class MongoDBDAO {
 		return PersonConverter.toPerson(data);
 	}
 
-	public void cleanDatabase(String databaseName) {
-		readAllUsers();
-		mongoClient.dropDatabase(databaseName);
+	public List<Game> addGames() {
+		List<Game> games = new ArrayList<>();
+		List<Document> documents = new ArrayList<>();
+		Document gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Panthers")
+				.append("date", "09-08-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Colts")
+				.append("date", "09-18-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Bengals")
+				.append("date", "09-25-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Buccaneers")
+				.append("date", "10-02-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Falcons")
+				.append("date", "10-09-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Chargers")
+				.append("date", "10-13-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Texans")
+				.append("date", "10-24-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Chargers")
+				.append("date", "10-30-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Raiders")
+				.append("date", "11-06-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Saints")
+				.append("date", "11-13-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Chiefs")
+				.append("date", "11-27-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Jaguars")
+				.append("date", "12-04-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Titans")
+				.append("date", "12-11-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Patriots")
+				.append("date", "12-18-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Chiefs")
+				.append("date", "12-25-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameDocument = new Document("team1Name", "Broncos")
+				.append("team2Name", "Raiders")
+				.append("date", "01-01-2016")
+				.append("time", "06:30PM")
+				.append("location", "Denver");
+		documents.add(gameDocument);
+
+		gameCollection.insertMany(documents);
+		return games;
 	}
 
+	public void dropUserCollection() {
+		userCollection.drop();
+	}
+
+	public void dropScoreCollection() {
+		scoreCollection.drop();
+	}
+
+	public void dropGameCollection() {
+		gameCollection.drop();
+	}
+
+	public List<Game> readAllGames() {
+		List<Game> games = new ArrayList<Game>();
+		log.info("gameCollection.count(): " + gameCollection.count());
+		MongoCursor<Document> cursor = gameCollection.find().iterator();
+		try {
+			while (cursor.hasNext()) {
+				Document document = cursor.next();
+				games.add(new Game(document.get("_id").toString(),
+						document.get("team1Name").toString(),
+						document.get("team2Name").toString(),
+						document.get("date").toString(),
+						document.get("time").toString(),
+						document.get("location").toString()));
+			}
+		} finally {
+			cursor.close();
+		}
+		log.info("games: " + games);
+		return games;
+	}
 }

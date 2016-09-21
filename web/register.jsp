@@ -43,24 +43,28 @@
 						<div class="form-bottom">
 							<form role="form" action="register" method="post" class="registration-form">
 								<div class="form-group">
-									<label class="sr-only" for="form-first-name">First name</label>
-									<input type="text" name="firstName" placeholder="First Name" class="form-first-name form-control" id="form-first-name">
+									<label class="sr-only">First name</label>
+									<input type="text" name="firstName" placeholder="First Name" id="form-first-name" class="form-first-name form-control">
 								</div>
 								<div class="form-group">
-									<label class="sr-only" for="form-last-name">Last name</label>
-									<input type="text" name="lastName" placeholder="Last Name" class="form-last-name form-control" id="form-last-name">
+									<label class="sr-only" >Last name</label>
+									<input type="text" name="lastName" placeholder="Last Name" id="form-last-name" class="form-last-name form-control">
 								</div>
 								<div class="form-group">
-									<label class="sr-only" for="form-email">Email</label>
-									<input type="text" name="email" placeholder="Email" class="form-email form-control" id="form-email">
+									<label class="sr-only">Email</label>
+									<input type="text" name="email" placeholder="Email" id="form-email" class="form-email form-control">
 								</div>
 								<div class="form-group">
-									<label class="sr-only" for="form-password">Password</label>
-									<input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password1">
+									<label class="sr-only">Password</label>
+									<input type="password" name="password" placeholder="Password" id="form-password1" class="form-password form-control">
 								</div>
 								<div class="form-group">
-									<label class="sr-only" for="form-password">Password</label>
-									<input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-password form-control" id="form-password2">
+									<label class="sr-only">Password</label>
+									<input type="password" name="confirmPassword" placeholder="Confirm Password" id="form-password2" class="form-password form-control">
+								</div>
+								<div class="form-group">
+									<label class="sr-only">Points</label>
+									<input type="text" name="totalPoints" placeholder="100 Total Points" disabled id="totalPoints" class="form-totalPoints form-control">
 								</div>
 								<button type="submit" class="btn-primary">Register</button>
 							</form>

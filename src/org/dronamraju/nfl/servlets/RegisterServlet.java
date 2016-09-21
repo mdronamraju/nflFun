@@ -62,6 +62,8 @@ public class RegisterServlet extends HttpServlet {
             user.setLastName(lastName);
             user.setEmail(email);
             user.setPassword(password);
+            user.setTotalPoints("100");
+            user.setAvailablePoints("100");
             if ("manudr@hotmail.com".equals(user.getEmail())) {
                 user.setIsAdmin(true);
             } else {

@@ -3,6 +3,7 @@ package org.dronamraju.nfl.servlets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dronamraju.nfl.dao.MongoDBDAO;
+import org.dronamraju.nfl.model.Game;
 import org.dronamraju.nfl.model.User;
 
 import javax.servlet.RequestDispatcher;
@@ -31,11 +32,19 @@ public class LoginServlet extends HttpServlet {
             rd.forward(request, response);
         } else {
             MongoDBDAO mongoDBDAO = new MongoDBDAO();
+            mongoDBDAO.dropGameCollection();
+            mongoDBDAO.addGames();
+            List<Game> games = mongoDBDAO.readAllGames();
+            request.getSession().setAttribute("games", games);
+            request.setAttribute("games", games);
             User user = mongoDBDAO.findUser(email, password);
             if (user != null) {
                 log.info("User logged in successfully...");
                 request.setAttribute("user", user);
                 request.getSession().setAttribute("user", user);
+                List scoreList = mongoDBDAO.readAllScores();
+                log.info("scoreList: " + scoreList);
+                request.getSession().setAttribute("scoreList", scoreList);
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/broncos.jsp");
                 rd.forward(request, response);
             } else {

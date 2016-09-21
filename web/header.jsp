@@ -19,9 +19,9 @@
                     <li><a href="http://www.nfl.com/standings" style="color: #ffffff;" target="_blank">NFL Standings</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/myScore"><div style="color: orangered; font-weight: bold;">My Points</div></a></li>
-                    <li><a href="/allScores"><div style="color: orangered; font-weight: bold;">All Points</div></a></li>
-                    <li><a href="/logout"><div style="color: orangered; font-weight: bold;">Logout</div></a></li>
+                    <li><a href="/apps/nflFun/myScore"><div style="color: orangered; font-weight: bold;">My Points</div></a></li>
+                    <li><a href="/apps/nflFun/allScores"><div style="color: orangered; font-weight: bold;">All Points</div></a></li>
+                    <li><a href="/apps/nflFun/logout"><div style="color: orangered; font-weight: bold;">Logout</div></a></li>
                 </ul>
         </div>
     </div>
