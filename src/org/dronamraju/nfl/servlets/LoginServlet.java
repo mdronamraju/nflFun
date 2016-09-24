@@ -24,7 +24,6 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        log.info("getParameterMap: " + request.getParameterMap());
         if (email == null || email.trim().equals("") || password == null || password.trim().equals("")) {
             log.error("Missing required fields...");
             request.setAttribute("loginErrors", "Missing required fields...");
@@ -33,7 +32,6 @@ public class LoginServlet extends HttpServlet {
         } else {
             MongoDBDAO mongoDBDAO = new MongoDBDAO();
             mongoDBDAO.dropGameCollection();
-            mongoDBDAO.addGames();
             List<Game> games = mongoDBDAO.readAllGames();
             request.getSession().setAttribute("games", games);
             request.setAttribute("games", games);
@@ -43,7 +41,6 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("user", user);
                 request.getSession().setAttribute("user", user);
                 List scoreList = mongoDBDAO.readAllScores();
-                log.info("scoreList: " + scoreList);
                 request.getSession().setAttribute("scoreList", scoreList);
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/broncos.jsp");
                 rd.forward(request, response);

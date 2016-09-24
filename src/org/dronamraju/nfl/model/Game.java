@@ -1,34 +1,35 @@
 package org.dronamraju.nfl.model;
 
+import javax.faces.bean.ManagedProperty;
+import java.io.Serializable;
+
 /**
  * Created by mdronamr on 9/19/16.
  */
-public class Game {
-    private String id;
-    String team1Name;
-    String team2Name;
-    String date;
-    String time;
-    String location;
+public class Game implements Serializable {
+    private String team1Name;
+    private String team2Name;
+    private String date;
+    private String time;
+    private String location;
+    private String team1Score;
+    private String team2Score;
+    private String winningTeam;
+    private String teamsTotalScore;
 
     public Game() {
     }
 
-    public Game(String id, String team1Name, String team2Name, String date, String time, String location) {
-        this.id = id;
+    public Game(String team1Name, String team2Name, String date, String time, String location, String team1Score, String team2Score, String winningTeam, String teamsTotalScore) {
         this.team1Name = team1Name;
         this.team2Name = team2Name;
         this.date = date;
         this.time = time;
         this.location = location;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
+        this.winningTeam = winningTeam;
+        this.teamsTotalScore = teamsTotalScore;
     }
 
     public String getTeam1Name() {
@@ -71,10 +72,41 @@ public class Game {
         this.location = location;
     }
 
+    public String getTeam1Score() {
+        return team1Score;
+    }
+
+    public void setTeam1Score(String team1Score) {
+        this.team1Score = team1Score;
+    }
+
+    public String getTeam2Score() {
+        return team2Score;
+    }
+
+    public void setTeam2Score(String team2Score) {
+        this.team2Score = team2Score;
+    }
+
+    public String getWinningTeam() {
+        return winningTeam;
+    }
+
+    public void setWinningTeam(String winningTeam) {
+        this.winningTeam = winningTeam;
+    }
+
+    public String getTeamsTotalScore() {
+        return teamsTotalScore;
+    }
+
+    public void setTeamsTotalScore(String teamsTotalScore) {
+        this.teamsTotalScore = teamsTotalScore;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
-                "id='" + id + '\'' +
                 "team1Name='" + team1Name + '\'' +
                 ", team2Name='" + team2Name + '\'' +
                 ", date='" + date + '\'' +

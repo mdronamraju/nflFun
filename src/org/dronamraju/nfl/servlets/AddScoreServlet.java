@@ -34,11 +34,9 @@ public class AddScoreServlet extends HttpServlet {
         Map<String, String[]> paramMap = request.getParameterMap();
         for (String key : paramMap.keySet()) {
             String[] paramValues = paramMap.get(key);
-            log.info("Key: " + key + ", Value: " + paramValues[0]);
             String value = (paramValues[0] == null || paramValues[0].trim() == null || "null".equals(paramValues[0].trim())) ? "" : paramValues[0];
             request.setAttribute(key, value);
         }
-
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/broncos.jsp");
         rd.forward(request, response);
     }

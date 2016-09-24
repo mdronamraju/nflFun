@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+<h:head>
+
+</h:head>
+
+<h:body>
+    <ui:include src="header.xhtml"/>
+    <div class="ui-fluid">
+        <h:form id="register">
+            <p:panel id="registerPanel" header="Register" style="align-content: center; align-items: center; margin: 5%">
+                <p:messages id="messages"/>
+                <h:panelGrid id="grid" columns="2" cellpadding="5">
+                    <h:outputLabel for="firstName" value="First Name:" style="font-weight:bold"/>
+                    <p:inputText id="firstName" value="#{registrationView.firstName}" placeholder="First Name"/>
+
+                    <h:outputLabel for="lastName" value="Last Name:" style="font-weight:bold"/>
+                    <p:inputText id="lastName" value="#{registrationView.lastName}" placeholder="Last Name"/>
+
+                    <h:outputLabel for="userName" value="User Name:" style="font-weight:bold"/>
+                    <p:inputText id="userName" value="#{registrationView.userName}" placeholder="User Name"/>
+
+                    <h:outputLabel for="password" value="Password:" style="font-weight:bold"/>
+                    <p:inputText id="password" value="#{registrationView.password}" placeholder="Password"/>
+
+                    <h:outputLabel for="confirmPassword" value="Confirm Password:" style="font-weight:bold"/>
+                    <p:inputText id="confirmPassword" value="#{registrationView.confirmPassword}" placeholder="Confirm Password"/>
+
+                    <h:outputLabel for="totalPoints" value="Total Points:" style="font-weight:bold"/>
+                    <p:inputText id="totalPoints" value="#{registrationView.totalPoints}" placeholder="Total Points"/>
+
+                    <p:commandButton value="Register"
+                                 update="messages"
+                                 actionListener="#{registrationView.register}" />
+                    <a href="index.xhtml">Login</a>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </div>
+</h:body>
+</html>

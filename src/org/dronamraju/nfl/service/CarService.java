@@ -5,22 +5,37 @@ package org.dronamraju.nfl.service;
  */
 import org.dronamraju.nfl.model.Car;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 @ManagedBean(name = "carService")
-@ApplicationScoped
-public class CarService {
+@SessionScoped
+public class CarService implements Serializable {
+
+    private final static Integer[] ids;
 
     private final static String[] colors;
 
     private final static String[] brands;
 
     static {
+        ids = new Integer[10];
+        ids[0] = 1;
+        ids[1] = 2;
+        ids[2] = 3;
+        ids[3] = 4;
+        ids[4] = 5;
+        ids[5] = 6;
+        ids[6] = 7;
+        ids[7] = 8;
+        ids[8] = 9;
+        ids[9] = 10;
+
         colors = new String[10];
         colors[0] = "Black";
         colors[1] = "White";
@@ -56,7 +71,8 @@ public class CarService {
     }
 
     private String getRandomId() {
-        return UUID.randomUUID().toString().substring(0, 8);
+        //return UUID.randomUUID().toString().substring(0, 8);
+        return new String(ids[(int) (Math.random() * 10)].toString());
     }
 
     private int getRandomYear() {

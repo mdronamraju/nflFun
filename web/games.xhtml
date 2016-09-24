@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+    <ui:include src="header.xhtml"/>
+
+    <div id="ui-fluid" class="ui-fluid">
+
+        <p:panel id="instructions" header="Instructions">
+            <h:panelGrid id="panelGrid" columns="1" cellpadding="10">
+                <h:outputLabel>
+                    Total 16 games
+                </h:outputLabel>
+                <h:outputLabel>
+                    Pool: Top 3 who select highest number of winning teams and who's total score of the 2 teams equals or very close to the actual score will be the winners (50%, 30%, 20%).
+                </h:outputLabel>
+                <h:outputLabel>
+                    Other conditions...
+                </h:outputLabel>
+            </h:panelGrid>
+        </p:panel>
+
+        <br></br>
+
+        <p:panel id="welcome" header="Welcome #{userLoginView.user.firstName} #{userLoginView.user.lastName}">
+
+                <h:form id="gamesForm">
+                    <p:commandButton
+                            style="width: 300px;"
+                            value="Save Scores"
+                            actionListener="#{gamesView.saveScores}" />
+
+                    <h:panelGrid columns="8" cellspacing="5">
+                        <c:set var="count" value="0"/>
+                        <c:forEach items="#{userLoginView.games}" var="game">
+                            <c:set var="count" value="${count + 1}"/>
+                            <h:outputLabel id="#{game.date}_#{count}" value="#{game.date}_#{count}"/>
+
+                            <h:outputLabel id="#{game.time}_#{count}" value="#{game.time}_#{count}" />
+
+                            <h:outputLabel id="#{game.location}_#{count}" value="#{game.location}_#{count}" />
+
+                            <h:outputLabel id="#{game.team1Name}_#{count}" value="#{game.team1Name}_#{count}" />
+
+                            <p:inputText id="#{game.team1Name}_#{count}_score" value="#{game.team1Name}_#{count}_score" size="2" maxlength="2" style="width: 50px;"/>
+
+                            <p:selectOneRadio id="#{game.team1Name}_#{count}_radio" value="#{game.team1Name}_#{count}_radio">
+                                <f:selectItem itemValue="#{game.team1Name}"/>
+                                <f:selectItem itemValue="#{game.team2Name}"/>
+                            </p:selectOneRadio>
+
+                            <p:inputText id="#{game.team2Name}_#{count}_score" value="#{game.team2Name}_#{count}_score" size="2" maxlength="2" style="width: 50px;"/>
+
+                            <h:outputLabel id="#{game.team2Name}_#{count}_score" value="#{game.team2Name}_#{count}" />
+
+                        </c:forEach>
+                    </h:panelGrid>
+
+                    <p:commandButton
+                            style="width: 300px;"
+                            value="Save Scores"
+                            actionListener="#{gamesView.saveScores}" />
+
+                </h:form>
+
+        </p:panel>
+
+    </div>
+</h:body>
+</html>

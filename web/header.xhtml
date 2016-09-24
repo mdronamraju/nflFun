@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+    <div class="ui-fluid">
+        <p:megaMenu orientation="horizontal">
+            <p:menuitem value="Home" url="games.xhtml" />
+            <p:submenu label="NFL">
+                <p:column>
+                    <p:submenu label="NFL">
+                        <p:menuitem value="NFL Scores" target="_new" url="http://www.nfl.com/scores" />
+                        <p:menuitem value="NFL Schedules" url="http://www.nfl.com/schedules" />
+                        <p:menuitem value="NFL Standings" url="http://www.nfl.com/standings" />
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+            <p:submenu label="Points">
+                <p:column>
+                    <p:submenu label="Points">
+                        <p:menuitem value="My Points" url="/myPoints.xhtml" />
+                        <p:menuitem value="All Points" url="/allPoints.xhtml" />
+                    </p:submenu>
+                </p:column>
+            </p:submenu>
+            <p:menuitem value="Logout" url="/logout.xhtml" />
+        </p:megaMenu>
+    </div>
+    <br></br><br></br><br></br>
+</h:body>
+</html>
+

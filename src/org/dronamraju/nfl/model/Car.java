@@ -1,10 +1,12 @@
 package org.dronamraju.nfl.model;
 
 
+import java.io.Serializable;
+
 /**
  * Created by mdronamr on 9/21/16.
  */
-public class Car {
+public class Car implements Serializable {
     String id;
     String brand;
     Integer year;

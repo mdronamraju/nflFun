@@ -21,9 +21,6 @@ import org.dronamraju.nfl.model.User;
 
 import static com.mongodb.client.model.Filters.*;
 
-//DAO class for different MongoDB CRUD operations
-//take special note of "id" String to ObjectId conversion and vice versa
-//also take note of "_id" key for primary key
 public class MongoDBDAO {
 	private static Log log = LogFactory.getLog(MongoDBDAO.class);
 	private DBCollection col;
@@ -51,7 +48,7 @@ public class MongoDBDAO {
 		log.info("createUser()...");
 		Document userDocument = new Document("firstName", user.getFirstName())
 				.append("lastName", user.getLastName())
-				.append("email", user.getEmail())
+				.append("email", user.getUserName())
 				.append("password", user.getPassword())
 				.append("totalPoints", user.getTotalPoints())
 				.append("availablePoints", user.getAvailablePoints())
@@ -69,8 +66,7 @@ public class MongoDBDAO {
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
 				log.info("document: " + document);
-				users.add(new User(document.get("_id").toString(),
-						document.get("firstName").toString(),
+				users.add(new User(document.get("firstName").toString(),
 						document.get("lastName").toString(),
 						document.get("email").toString(),
 						document.get("totalPoints").toString(),
@@ -89,8 +85,7 @@ public class MongoDBDAO {
 		log.info("findUser(): " + email + ", " + password);
 		Document document = userCollection.find(eq("email", email)).first();
 		if (document != null) {
-			User user = new User(document.get("_id").toString(),
-					document.get("firstName").toString(),
+			User user = new User(document.get("firstName").toString(),
 					document.get("lastName").toString(),
 					document.get("email").toString(),
 					document.get("totalPoints").toString(),
@@ -109,8 +104,7 @@ public class MongoDBDAO {
 		log.info("findUser(): " + email);
 		Document document = userCollection.find(eq("email", email)).first();
 		if (document != null) {
-			User user = new User(document.get("_id").toString(),
-					document.get("firstName").toString(),
+			User user = new User(document.get("firstName").toString(),
 					document.get("lastName").toString(),
 					document.get("email").toString(),
 					document.get("totalPoints").toString(),
@@ -125,16 +119,16 @@ public class MongoDBDAO {
 
 	public void saveScores(User user, Map<String, String[]> paramMap) {
 		Document paramMapDocument = new Document();
-		paramMapDocument.append("email", user.getEmail());
+		paramMapDocument.append("email", user.getUserName());
 
 		for (String key : paramMap.keySet()) {
 			String[] paramValues = paramMap.get(key);
-			log.info("Key: " + key + ", Value: " + paramValues[0]);
-			paramMapDocument.append(key, paramValues[0]);
+			String value = paramValues[0];
+			if (key.contains("gamesForm:")) {
+				paramMapDocument.append(key, value);
+			}
 		}
-
 		scoreCollection.insertOne(paramMapDocument);
-		log.info(readAllScores());
 	}
 
 	public List readAllScores() {
@@ -151,6 +145,33 @@ public class MongoDBDAO {
 		}
 		log.info("scoreList: " + scoreList);
 		return scoreList;
+	}
+
+	public List<Game> readUserGames(String email) {
+		List<Game> userGames = readAllGames();
+		MongoCursor<Document> cursor = scoreCollection.find().iterator();
+		try {
+			while (cursor.hasNext()) {
+				Document document = cursor.next();
+				log.info(email + ", " + document.get("email"));
+				if (email.equals(document.get("email"))) {
+					log.info("document: " + document);
+					userGames.add(new Game(document.get("team1Name") == null ? "" : document.get("team1Name").toString(),
+							document.get("team2Name") == null ? "" : document.get("team2Name").toString(),
+							document.get("date") == null ? "" : document.get("date").toString(),
+							document.get("time") == null ? "" : document.get("time").toString(),
+							document.get("location") == null ? "" : document.get("location").toString(),
+							document.get("team1Score") == null ? "" : document.get("team1Score").toString(),
+							document.get("team2Score") == null ? "" : document.get("team2Score").toString(),
+							document.get("winningTeam") == null ? "" : document.get("winningTeam").toString(),
+							document.get("teamsTotalScore") == null ? "" : document.get("teamsTotalScore").toString()));
+				}
+			}
+		} finally {
+			cursor.close();
+		}
+		log.info("userGames: " + userGames);
+		return userGames;
 	}
 
 	public Person createPerson(Person p) {
@@ -198,112 +219,176 @@ public class MongoDBDAO {
 				.append("team2Name", "Panthers")
 				.append("date", "09-08-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Colts")
 				.append("date", "09-18-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Bengals")
 				.append("date", "09-25-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Buccaneers")
 				.append("date", "10-02-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Falcons")
 				.append("date", "10-09-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Chargers")
 				.append("date", "10-13-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Texans")
 				.append("date", "10-24-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Chargers")
 				.append("date", "10-30-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Raiders")
 				.append("date", "11-06-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Saints")
 				.append("date", "11-13-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Chiefs")
 				.append("date", "11-27-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Jaguars")
 				.append("date", "12-04-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Titans")
 				.append("date", "12-11-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Patriots")
 				.append("date", "12-18-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Chiefs")
 				.append("date", "12-25-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameDocument = new Document("team1Name", "Broncos")
 				.append("team2Name", "Raiders")
 				.append("date", "01-01-2016")
 				.append("time", "06:30PM")
-				.append("location", "Denver");
+				.append("location", "Denver")
+				.append("team1Score", "")
+				.append("team2Score", "")
+				.append("winningTeam", "")
+				.append("teamsTotalScore", "");
 		documents.add(gameDocument);
 
 		gameCollection.insertMany(documents);
@@ -327,14 +412,19 @@ public class MongoDBDAO {
 		log.info("gameCollection.count(): " + gameCollection.count());
 		MongoCursor<Document> cursor = gameCollection.find().iterator();
 		try {
+			int i = 1;
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
-				games.add(new Game(document.get("_id").toString(),
-						document.get("team1Name").toString(),
+				games.add(new Game(document.get("team1Name").toString(),
 						document.get("team2Name").toString(),
 						document.get("date").toString(),
 						document.get("time").toString(),
-						document.get("location").toString()));
+						document.get("location").toString(),
+						document.get("team1Score").toString(),
+						document.get("team2Score").toString(),
+						document.get("winningTeam").toString(),
+						document.get("teamsTotalScore").toString()));
+				i++;
 			}
 		} finally {
 			cursor.close();

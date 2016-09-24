@@ -1,13 +1,21 @@
 package org.dronamraju.nfl.model;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import java.io.Serializable;
+
 /**
  * Created by mdronamr on 9/14/16.
  */
-public class User {
-    private String id;
+
+@ManagedBean(name= "user")
+@SessionScoped
+public class User implements Serializable {
     private String firstName;
     private String lastName;
-    private String email;
+    private String userName;
     private String totalPoints;
     private String availablePoints;
     private String password;
@@ -17,23 +25,14 @@ public class User {
 
     }
 
-    public User(String id, String firstName, String lastName, String email, String totalPoints, String availablePoints, String password, Boolean isAdmin) {
-        this.id = id;
+    public User(String firstName, String lastName, String userName, String totalPoints, String availablePoints, String password, Boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.userName = userName;
         this.totalPoints = totalPoints;
         this.availablePoints = availablePoints;
         this.password = password;
         this.isAdmin = isAdmin;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -52,12 +51,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -95,10 +94,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
                 ", totalPoints='" + totalPoints + '\'' +
                 ", availablePoints='" + availablePoints + '\'' +
                 ", password='" + password + '\'' +

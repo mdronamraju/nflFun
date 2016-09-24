@@ -11,11 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.dronamraju.nfl.dao.MongoDBDAO;
-import org.dronamraju.nfl.util.Validator;
+import org.dronamraju.nfl.util.Util;
 
 /**
  * Created by mdronamr on 9/14/16.
@@ -31,7 +30,6 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        log.info("getParameterMap: " + request.getParameterMap());
         StringBuilder errorsString = new StringBuilder();
         Boolean errors = false;
         if (firstName == null || firstName.trim().equals("")) {
@@ -42,7 +40,7 @@ public class RegisterServlet extends HttpServlet {
             errorsString.append("Invalid Last Name, ");
             errors = true;
         }
-        if (email == null || email.trim().equals("") || !Validator.validateEmail(email)) {
+        if (email == null || email.trim().equals("") || !Util.validateEmail(email)) {
             errorsString.append("Invalid EMail, ");
             errors = true;
         }
@@ -60,18 +58,18 @@ public class RegisterServlet extends HttpServlet {
             User user = new User();
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setEmail(email);
+            user.setUserName(email);
             user.setPassword(password);
             user.setTotalPoints("100");
             user.setAvailablePoints("100");
-            if ("manudr@hotmail.com".equals(user.getEmail())) {
+            if ("manudr@hotmail.com".equals(user.getUserName())) {
                 user.setIsAdmin(true);
             } else {
                 user.setIsAdmin(false);
             }
             MongoDBDAO mongoDBDAO = new MongoDBDAO();
-            if (mongoDBDAO.findUser(user.getEmail()) != null) {
-                request.setAttribute("registrationErrors", "User already exists with email: " + user.getEmail());
+            if (mongoDBDAO.findUser(user.getUserName()) != null) {
+                request.setAttribute("registrationErrors", "User already exists with email: " + user.getUserName());
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/register.jsp");
                 rd.forward(request, response);
             } else {
@@ -79,7 +77,6 @@ public class RegisterServlet extends HttpServlet {
                 request.setAttribute("success", "User Added Successfully");
                 List<User> users = mongoDBDAO.readAllUsers();
                 request.setAttribute("users", users);
-                log.info("users: " + users);
                 request.setAttribute("registrationSuccess", "You have been registered. Try login.");
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
                 rd.forward(request, response);
