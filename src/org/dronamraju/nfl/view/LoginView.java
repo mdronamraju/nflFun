@@ -13,6 +13,7 @@ import javax.faces.event.ActionEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.Document;
 import org.dronamraju.nfl.dao.MongoDBDAO;
 import org.dronamraju.nfl.model.Game;
 import org.dronamraju.nfl.model.User;
@@ -20,6 +21,7 @@ import org.dronamraju.nfl.util.Util;
 import org.primefaces.context.RequestContext;
 
 import java.util.List;
+import java.util.Map;
 
 @ManagedBean(name= "userLoginView")
 @SessionScoped
@@ -30,6 +32,7 @@ public class LoginView {
     private String password;
     private List<Game> games;
     private User user;
+    private List<Document> gamesList;
 
     private MongoDBDAO mongoDBDAO = new MongoDBDAO();
 
@@ -65,6 +68,14 @@ public class LoginView {
         this.user = user;
     }
 
+    public List<Document>  getGamesList() {
+        return gamesList;
+    }
+
+    public void setGamesMap(List<Document>  gamesList) {
+        this.gamesList = gamesList;
+    }
+
     public void login(ActionEvent event) {
         log.info("login: " + userName + ", " + password);
         try {
@@ -87,11 +98,11 @@ public class LoginView {
             if (user != null) {
                 log.info("User logged in successfully...");
                 Util.getHttpSession().setAttribute("loggedInUser", user);
-                games = mongoDBDAO.readUserGames(user.getUserName());
-                if (games == null || games.size() < 1) {
-                    games = mongoDBDAO.readAllGames();
+                //gamesMap = mongoDBDAO.getUserGamesMap(Util.getLoggedInUser().getUserName());
+                if (gamesList == null || gamesList.size() < 1) {
+                    gamesList = mongoDBDAO.getGamesList();
                 }
-                log.info("games for games view: " + games);
+                log.info("gamesList: " + gamesList);
                 FacesContext.getCurrentInstance().getExternalContext().redirect("games.xhtml");
             } else {
                 log.info("User not found...");

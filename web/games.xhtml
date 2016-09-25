@@ -3,6 +3,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       xmlns:p="http://primefaces.org/ui"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://java.sun.com/jsf/facelets">
 
@@ -39,14 +40,33 @@
                             value="Save Scores"
                             actionListener="#{gamesView.saveScores}" />
 
-                    <h:panelGrid columns="8" cellspacing="5">
-                        <c:set var="count" value="0"/>
+                    <fmt:parseNumber var="i" integerOnly="true" type="number" value="0" />
+                    <h:panelGrid columns="9" cellspacing="2" border="1">
 
-                        <c:forEach items="#{userLoginView.userGamesMap}" var="entry">
-                            <h:outputLabel value="#{entry.key}"/>
-                            <h:outputLabel value="#{entry.value}"/>
+
+
+                        <c:forEach items="#{userLoginView.gamesList}" var="document">
+                            <c:set var="i" value="#{i+1}" />
+                            <c:set var="teamAName_counter" value="teamAName_#{i}" />
+                            <c:set var="teamBName_counter" value="teamBName_#{i}" />
+                            <c:set var="date_counter" value="date_#{i}" />
+                            <c:set var="time_counter" value="time_#{i}" />
+                            <c:set var="location_counter" value="location_#{i}" />
+                            <c:set var="teamAScore_counter" value="teamAScore_#{i}" />
+                            <c:set var="teamBScore_counter" value="teamBScore_#{i}" />
+                            <c:set var="winningTeam_counter" value="winningTeam_#{i}" />
+                            <c:set var="teamsTotalScore_counter" value="teamsTotalScore_#{i}" />
+
+                            <h:outputLabel value="#{teamAName_counter}"/>
+                            <h:outputLabel value="#{teamBName_counter}"/>
+                            <h:outputLabel value="#{date_counter}"/>
+                            <h:outputLabel value="#{time_counter}"/>
+                            <h:outputLabel value="#{location_counter}"/>
+                            <h:outputLabel value="#{teamAScore_counter}"/>
+                            <h:outputLabel value="#{teamBScore_counter}"/>
+                            <h:outputLabel value="#{winningTeam_counter}"/>
+                            <h:outputLabel value="#{teamsTotalScore_counter}"/>
                         </c:forEach>
-
 
                     </h:panelGrid>
 

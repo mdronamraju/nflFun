@@ -7,45 +7,45 @@ import java.io.Serializable;
  * Created by mdronamr on 9/19/16.
  */
 public class Game implements Serializable {
-    private String team1Name;
-    private String team2Name;
+    private String teamAName;
+    private String teamBName;
     private String date;
     private String time;
     private String location;
-    private String team1Score;
-    private String team2Score;
+    private String teamAScore;
+    private String teamBScore;
     private String winningTeam;
     private String teamsTotalScore;
 
     public Game() {
     }
 
-    public Game(String team1Name, String team2Name, String date, String time, String location, String team1Score, String team2Score, String winningTeam, String teamsTotalScore) {
-        this.team1Name = team1Name;
-        this.team2Name = team2Name;
+    public Game(String teamAName, String teamBName, String date, String time, String location, String teamAScore, String teamBScore, String winningTeam, String teamsTotalScore) {
+        this.teamAName = teamAName;
+        this.teamBName = teamBName;
         this.date = date;
         this.time = time;
         this.location = location;
-        this.team1Score = team1Score;
-        this.team2Score = team2Score;
+        this.teamAScore = teamAScore;
+        this.teamBScore = teamBScore;
         this.winningTeam = winningTeam;
         this.teamsTotalScore = teamsTotalScore;
     }
 
-    public String getTeam1Name() {
-        return team1Name;
+    public String getTeamAName() {
+        return teamAName;
     }
 
-    public void setTeam1Name(String team1Name) {
-        this.team1Name = team1Name;
+    public void setTeamAName(String teamAName) {
+        this.teamAName = teamAName;
     }
 
-    public String getTeam2Name() {
-        return team2Name;
+    public String getTeamBName() {
+        return teamBName;
     }
 
-    public void setTeam2Name(String team2Name) {
-        this.team2Name = team2Name;
+    public void setTeamBName(String teamBName) {
+        this.teamBName = teamBName;
     }
 
     public String getDate() {
@@ -72,20 +72,20 @@ public class Game implements Serializable {
         this.location = location;
     }
 
-    public String getTeam1Score() {
-        return team1Score;
+    public String getTeamAScore() {
+        return teamAScore;
     }
 
-    public void setTeam1Score(String team1Score) {
-        this.team1Score = team1Score;
+    public void setTeamAScore(String teamAScore) {
+        this.teamAScore = teamAScore;
     }
 
-    public String getTeam2Score() {
-        return team2Score;
+    public String getTeamBScore() {
+        return teamBScore;
     }
 
-    public void setTeam2Score(String team2Score) {
-        this.team2Score = team2Score;
+    public void setTeamBScore(String teamBScore) {
+        this.teamBScore = teamBScore;
     }
 
     public String getWinningTeam() {
@@ -107,8 +107,8 @@ public class Game implements Serializable {
     @Override
     public String toString() {
         return "Game{" +
-                "team1Name='" + team1Name + '\'' +
-                ", team2Name='" + team2Name + '\'' +
+                "teamAName='" + teamAName + '\'' +
+                ", teamBName='" + teamBName + '\'' +
                 ", date='" + date + '\'' +
                 ", time='" + time + '\'' +
                 ", location='" + location + '\'' +

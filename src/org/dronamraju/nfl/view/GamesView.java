@@ -5,6 +5,7 @@ package org.dronamraju.nfl.view;
  */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.Document;
 import org.dronamraju.nfl.dao.MongoDBDAO;
 import org.dronamraju.nfl.model.Car;
 import org.dronamraju.nfl.model.Game;
@@ -27,6 +28,8 @@ public class GamesView implements Serializable {
 
     private List<Game> games;
 
+    private Map<String, Document> userGamesMap;
+
     private MongoDBDAO mongoDBDAO = new MongoDBDAO();
 
     @PostConstruct
@@ -43,6 +46,14 @@ public class GamesView implements Serializable {
         this.games = games;
     }
 
+    public Map<String, Document> getUserGamesMap() {
+        return userGamesMap;
+    }
+
+    public void setUserGamesMap(Map<String, Document> userGamesMap) {
+        this.userGamesMap = userGamesMap;
+    }
+
     public void saveScores() {
         try {
             Map<String, String[]> paramValueMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
@@ -52,6 +63,7 @@ public class GamesView implements Serializable {
             if (games == null || games.size() < 1) {
                 games = mongoDBDAO.readAllGames();
             }
+            userGamesMap = mongoDBDAO.getUserGamesMap(Util.getLoggedInUser().getUserName());
             log.info("games for games view: " + games);
             FacesContext.getCurrentInstance().getExternalContext().redirect("games.xhtml");
         } catch (Exception e) {

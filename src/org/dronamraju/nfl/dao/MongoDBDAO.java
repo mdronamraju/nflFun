@@ -2,12 +2,15 @@ package org.dronamraju.nfl.dao;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.mongodb.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.sun.javadoc.Doc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
@@ -147,25 +150,67 @@ public class MongoDBDAO {
 		return scoreList;
 	}
 
-	public List<Game> readUserGames(String email) {
-		List<Game> userGames = readAllGames();
+	public List<Document> getGamesList() {
+		List<Document> gamesList = new ArrayList<>();
+		MongoCursor<Document> cursor = gameCollection.find().iterator();
+		try {
+			int i = 1;
+			while (cursor.hasNext()) {
+				Document document = cursor.next();
+				log.info("document: " + document);
+				gamesList.add(document);
+				i++;
+			}
+		} finally {
+			cursor.close();
+		}
+		log.info("gamesList: " + gamesList);
+		return gamesList;
+	}
+
+	public Map<String, Document> getUserGamesMap(String email) {
+		Map<String, Document> userGamesMap = new HashMap<>();
 		MongoCursor<Document> cursor = scoreCollection.find().iterator();
 		try {
+			int i = 1;
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
 				log.info(email + ", " + document.get("email"));
 				if (email.equals(document.get("email"))) {
 					log.info("document: " + document);
-					userGames.add(new Game(document.get("team1Name") == null ? "" : document.get("team1Name").toString(),
-							document.get("team2Name") == null ? "" : document.get("team2Name").toString(),
-							document.get("date") == null ? "" : document.get("date").toString(),
-							document.get("time") == null ? "" : document.get("time").toString(),
-							document.get("location") == null ? "" : document.get("location").toString(),
-							document.get("team1Score") == null ? "" : document.get("team1Score").toString(),
-							document.get("team2Score") == null ? "" : document.get("team2Score").toString(),
-							document.get("winningTeam") == null ? "" : document.get("winningTeam").toString(),
-							document.get("teamsTotalScore") == null ? "" : document.get("teamsTotalScore").toString()));
+					userGamesMap.put(document.get("teamAName_" + i).toString() + document.get("date_" + i), document);
 				}
+				i++;
+			}
+			log.info("userGamesMap: " + userGamesMap);
+		} finally {
+			cursor.close();
+		}
+		log.info("userGamesMap: " + userGamesMap);
+		return userGamesMap;
+	}
+
+	public List<Game> readUserGames(String email) {
+		List<Game> userGames = readAllGames();
+		MongoCursor<Document> cursor = scoreCollection.find().iterator();
+		try {
+			int i = 1;
+			while (cursor.hasNext()) {
+				Document document = cursor.next();
+				log.info(email + ", " + document.get("email"));
+				if (email.equals(document.get("email"))) {
+					log.info("document: " + document);
+					userGames.add(new Game(document.get("teamAName_" + i) == null ? "" : document.get("teamAName_" + i).toString(),
+							document.get("teamBName_" + i) == null ? "" : document.get("teamBName_" + i).toString(),
+							document.get("date_" + i) == null ? "" : document.get("date_" + i).toString(),
+							document.get("time_" + i) == null ? "" : document.get("time_" + i).toString(),
+							document.get("location_" + i) == null ? "" : document.get("location_" + i).toString(),
+							document.get("teamAScore_" + i) == null ? "" : document.get("teamAScore_" + i).toString(),
+							document.get("teamBScore_" + i) == null ? "" : document.get("teamBScore_" + i).toString(),
+							document.get("winningTeam_" + i) == null ? "" : document.get("winningTeam_" + i).toString(),
+							document.get("teamsTotalScore_" + i) == null ? "" : document.get("teamsTotalScore_" + i).toString()));
+				}
+				i++;
 			}
 		} finally {
 			cursor.close();
@@ -215,181 +260,183 @@ public class MongoDBDAO {
 	public List<Game> addGames() {
 		List<Game> games = new ArrayList<>();
 		List<Document> documents = new ArrayList<>();
-		Document gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Panthers")
-				.append("date", "09-08-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
+		int i = 1;
+		Document gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Panthers")
+				.append("date_" + i, "09-08-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Colts")
+				.append("date_" + i, "09-18-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Bengals")
+				.append("date_" + i, "09-25-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Buccaneers")
+				.append("date_" + i, "10-02-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Falcons")
+				.append("date_" + i, "10-09-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Chargers")
+				.append("date_" + i, "10-13-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Texans")
+				.append("date_" + i, "10-24-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Chargers")
+				.append("date_" + i, "10-30-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Raiders")
+				.append("date_" + i, "11-06-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Saints")
+				.append("date_" + i, "11-13-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Chiefs")
+				.append("date_" + i, "11-27-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Jaguars")
+				.append("date_" + i, "12-04-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Titans")
+				.append("date_" + i, "12-11-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Patriots")
+				.append("date_" + i, "12-18-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Chiefs")
+				.append("date_" + i, "12-25-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
+		documents.add(gameDocument);
+		i++;
+		gameDocument = new Document("teamAName_" + i, "Broncos")
+				.append("teamBName_" + i, "Raiders")
+				.append("date_" + i, "01-01-2016")
+				.append("time_" + i, "06:30PM")
+				.append("location_" + i, "Denver")
+				.append("teamAScore_" + i, "")
+				.append("teamBScore_" + i, "")
+				.append("winningTeam_" + i, "")
+				.append("teamsTotalScore_" + i, "");
 		documents.add(gameDocument);
 
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Colts")
-				.append("date", "09-18-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Bengals")
-				.append("date", "09-25-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Buccaneers")
-				.append("date", "10-02-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Falcons")
-				.append("date", "10-09-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Chargers")
-				.append("date", "10-13-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Texans")
-				.append("date", "10-24-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Chargers")
-				.append("date", "10-30-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Raiders")
-				.append("date", "11-06-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Saints")
-				.append("date", "11-13-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Chiefs")
-				.append("date", "11-27-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Jaguars")
-				.append("date", "12-04-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Titans")
-				.append("date", "12-11-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Patriots")
-				.append("date", "12-18-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Chiefs")
-				.append("date", "12-25-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
-
-		gameDocument = new Document("team1Name", "Broncos")
-				.append("team2Name", "Raiders")
-				.append("date", "01-01-2016")
-				.append("time", "06:30PM")
-				.append("location", "Denver")
-				.append("team1Score", "")
-				.append("team2Score", "")
-				.append("winningTeam", "")
-				.append("teamsTotalScore", "");
-		documents.add(gameDocument);
 
 		gameCollection.insertMany(documents);
 		return games;
@@ -415,15 +462,15 @@ public class MongoDBDAO {
 			int i = 1;
 			while (cursor.hasNext()) {
 				Document document = cursor.next();
-				games.add(new Game(document.get("team1Name").toString(),
-						document.get("team2Name").toString(),
-						document.get("date").toString(),
-						document.get("time").toString(),
-						document.get("location").toString(),
-						document.get("team1Score").toString(),
-						document.get("team2Score").toString(),
-						document.get("winningTeam").toString(),
-						document.get("teamsTotalScore").toString()));
+				games.add(new Game(document.get("teamAName_" + i).toString(),
+						document.get("teamBName_" + i).toString(),
+						document.get("date_" + i).toString(),
+						document.get("time_" + i).toString(),
+						document.get("location_" + i).toString(),
+						document.get("teamAScore_" + i).toString(),
+						document.get("teamBScore_" + i).toString(),
+						document.get("winningTeam_" + i).toString(),
+						document.get("teamsTotalScore_" + i).toString()));
 				i++;
 			}
 		} finally {
