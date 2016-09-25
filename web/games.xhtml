@@ -41,28 +41,13 @@
 
                     <h:panelGrid columns="8" cellspacing="5">
                         <c:set var="count" value="0"/>
-                        <c:forEach items="#{userLoginView.games}" var="game">
-                            <c:set var="count" value="${count + 1}"/>
-                            <h:outputLabel id="#{game.date}_#{count}" value="#{game.date}_#{count}"/>
 
-                            <h:outputLabel id="#{game.time}_#{count}" value="#{game.time}_#{count}" />
-
-                            <h:outputLabel id="#{game.location}_#{count}" value="#{game.location}_#{count}" />
-
-                            <h:outputLabel id="#{game.team1Name}_#{count}" value="#{game.team1Name}_#{count}" />
-
-                            <p:inputText id="#{game.team1Name}_#{count}_score" value="#{game.team1Name}_#{count}_score" size="2" maxlength="2" style="width: 50px;"/>
-
-                            <p:selectOneRadio id="#{game.team1Name}_#{count}_radio" value="#{game.team1Name}_#{count}_radio">
-                                <f:selectItem itemValue="#{game.team1Name}"/>
-                                <f:selectItem itemValue="#{game.team2Name}"/>
-                            </p:selectOneRadio>
-
-                            <p:inputText id="#{game.team2Name}_#{count}_score" value="#{game.team2Name}_#{count}_score" size="2" maxlength="2" style="width: 50px;"/>
-
-                            <h:outputLabel id="#{game.team2Name}_#{count}_score" value="#{game.team2Name}_#{count}" />
-
+                        <c:forEach items="#{userLoginView.userGamesMap}" var="entry">
+                            <h:outputLabel value="#{entry.key}"/>
+                            <h:outputLabel value="#{entry.value}"/>
                         </c:forEach>
+
+
                     </h:panelGrid>
 
                     <p:commandButton
