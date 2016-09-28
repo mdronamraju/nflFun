@@ -32,7 +32,7 @@
 
         <br></br>
 
-        <p:panel id="welcome" header="Welcome #{userLoginView.user.firstName} #{userLoginView.user.lastName}">
+        <p:panel id="welcome" header="Welcome #{userLoginView.user.firstName} #{userLoginView.user.lastName}" style="width: 85%">
 
                 <h:form id="gamesForm">
                     <p:commandButton
@@ -41,9 +41,7 @@
                             actionListener="#{gamesView.saveScores}" />
 
                     <fmt:parseNumber var="i" integerOnly="true" type="number" value="0" />
-                    <h:panelGrid columns="9" cellspacing="2" border="1">
-
-
+                    <h:panelGrid columns="9" cellspacing="2" cellpadding="10" style="border-width: 1px;">
 
                         <c:forEach items="#{userLoginView.gamesList}" var="document">
                             <c:set var="i" value="#{i+1}" />
@@ -57,15 +55,24 @@
                             <c:set var="winningTeam_counter" value="winningTeam_#{i}" />
                             <c:set var="teamsTotalScore_counter" value="teamsTotalScore_#{i}" />
 
-                            <h:outputLabel value="#{teamAName_counter}"/>
-                            <h:outputLabel value="#{teamBName_counter}"/>
-                            <h:outputLabel value="#{date_counter}"/>
-                            <h:outputLabel value="#{time_counter}"/>
-                            <h:outputLabel value="#{location_counter}"/>
-                            <h:outputLabel value="#{teamAScore_counter}"/>
-                            <h:outputLabel value="#{teamBScore_counter}"/>
-                            <h:outputLabel value="#{winningTeam_counter}"/>
-                            <h:outputLabel value="#{teamsTotalScore_counter}"/>
+                            <h:inputText id="#{date_counter}" value="#{document.get(date_counter)}" size="10"/>
+                            <h:inputText id="#{time_counter}" value="#{document.get(time_counter)}" size="8"/>
+
+                            <h:inputText id="#{location_counter}" value="#{document.get(location_counter)}" size="10"/>
+
+                            <h:inputText id="#{teamAName_counter}" value="#{document.get(teamAName_counter)}" size="10"/>
+                            <p:inputText id="#{teamAScore_counter}" value="#{document.get(teamAScore_counter)}" size="3" maxlength="3"/>
+
+                            <p:selectOneRadio id="#{winningTeam_counter}" value="#{document.get(winningTeam_counter)}">
+                                <f:selectItem itemValue="#{document.get(teamAName_counter)}"/>
+                                <f:selectItem itemValue="#{document.get(teamBName_counter)}"/>
+                            </p:selectOneRadio>
+
+                            <p:inputText id="#{teamBScore_counter}" value="#{document.get(teamBScore_counter)}" size="3" maxlength="3"/>
+                            <h:inputText id="#{teamBName_counter}" value="#{document.get(teamBName_counter)}" size="10"/>
+
+                            <h:inputText id="#{teamsTotalScore_counter}" value="#{document.get(teamsTotalScore_counter)}" size="3"/>
+
                         </c:forEach>
 
                     </h:panelGrid>

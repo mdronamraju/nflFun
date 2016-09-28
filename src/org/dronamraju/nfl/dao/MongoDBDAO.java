@@ -120,18 +120,8 @@ public class MongoDBDAO {
 		return null;
 	}
 
-	public void saveScores(User user, Map<String, String[]> paramMap) {
-		Document paramMapDocument = new Document();
-		paramMapDocument.append("email", user.getUserName());
-
-		for (String key : paramMap.keySet()) {
-			String[] paramValues = paramMap.get(key);
-			String value = paramValues[0];
-			if (key.contains("gamesForm:")) {
-				paramMapDocument.append(key, value);
-			}
-		}
-		scoreCollection.insertOne(paramMapDocument);
+	public void saveScores(List<Document> userScoreDocuments) {
+		scoreCollection.insertMany(userScoreDocuments);
 	}
 
 	public List readAllScores() {

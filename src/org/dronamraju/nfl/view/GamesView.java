@@ -14,6 +14,7 @@ import org.dronamraju.nfl.service.CarService;
 import org.dronamraju.nfl.util.Util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -56,15 +57,93 @@ public class GamesView implements Serializable {
 
     public void saveScores() {
         try {
+            List<Document> userScoreDocuments = new ArrayList<>();
             Map<String, String[]> paramValueMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
-            mongoDBDAO.saveScores(Util.getLoggedInUser(), paramValueMap);
-            Util.getHttpSession().setAttribute("userScores", mongoDBDAO.readUserGames(Util.getLoggedInUser().getUserName()));
-            games = mongoDBDAO.readUserGames(Util.getLoggedInUser().getUserName());
-            if (games == null || games.size() < 1) {
-                games = mongoDBDAO.readAllGames();
+            log.info("paramValueMap: " + paramValueMap);
+            for (int i=0; i<=games.size(); i++) {
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:teamAName_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:teamBName_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:date_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:time_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:location_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:teamAScore_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:teamBScore_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:winningTeam_" + i)[0]);
+                log.info("paramValue for " + i + ": " + paramValueMap.get("gamesForm:teamsTotalScore_" + i)[0]);
+
+                Document userScoreDocument = new Document();
+                userScoreDocument.append("email", Util.getLoggedInUser().getUserName())
+                        .append("teamAName_" + i, paramValueMap.get("teamAName_" + i)[0])
+                        .append("teamBName_" + i, paramValueMap.get("teamBName_" + i)[0])
+                        .append("date_" + i, paramValueMap.get("date_" + i)[0])
+                        .append("time_" + i, paramValueMap.get("time_" + i)[0])
+                        .append("location_" + i, paramValueMap.get("location_" + i)[0])
+                        .append("teamAScore_" + i, paramValueMap.get("teamAScore_" + i)[0])
+                        .append("teamBScore_" + i, paramValueMap.get("teamBScore_" + i)[0])
+                        .append("winningTeam_", paramValueMap.get("winningTeam_" + i)[0])
+                        .append("teamsTotalScore_", paramValueMap.get("teamsTotalScore_" + i)[0]);
+                userScoreDocuments.add(userScoreDocument);
             }
-            userGamesMap = mongoDBDAO.getUserGamesMap(Util.getLoggedInUser().getUserName());
-            log.info("games for games view: " + games);
+            /*
+
+            String[] paramValues = paramValueMap.get("gamesForm:teamAName_" + i);
+            String value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:teamBName_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:date_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:time_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:location_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:teamAScore_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:teamBScore_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:teamBScore_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:winningTeam_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            paramValues = paramValueMap.get("gamesForm:teamsTotalScore_" + i);
+            value = paramValues[0];
+            log.info(" value: " + value);
+
+            */
+
+            /*
+            Document gameDocument = new Document("teamAName_" + i, paramValueMap.get("gamesForm:teamAName_" + i)[0])
+                    .append("teamBName_" + i, paramValueMap.get("gamesForm:teamBName_" + i)[0])
+                    .append("date_" + i, paramValueMap.get("gamesForm:date_" + i)[0])
+                    .append("time_" + i, paramValueMap.get("gamesForm:time_" + i)[0])
+                    .append("location_" + i, paramValueMap.get("gamesForm:location_" + i)[0])
+                    .append("teamAScore_" + i, paramValueMap.get("gamesForm:teamAScore_" + i)[0])
+                    .append("teamBScore_" + i, paramValueMap.get("gamesForm:teamBScore_" + i)[0])
+                    .append("winningTeam_" + i, paramValueMap.get("gamesForm:winningTeam_" + i)[0])
+                    .append("teamsTotalScore_" + i, paramValueMap.get("gamesForm:teamsTotalScore_" + i)[0]);
+            log.info("gameDocument: " + gameDocument);
+            documents.add(gameDocument);
+            */
+
+            mongoDBDAO.saveScores(userScoreDocuments);
+
             FacesContext.getCurrentInstance().getExternalContext().redirect("games.xhtml");
         } catch (Exception e) {
             throw new RuntimeException(e);
